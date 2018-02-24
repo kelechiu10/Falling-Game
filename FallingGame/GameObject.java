@@ -18,7 +18,7 @@ public class GameObject
     protected BufferedImage image;
     protected boolean visible;
     private final int GAME_WIDTH;
-    public GameObject(int x, int y, String imageFile, gameWidth)
+    public GameObject(int x, int y, String imageFile, int gameWidth)
     {
         myX = x;
         myY = y;
