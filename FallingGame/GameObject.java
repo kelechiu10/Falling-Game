@@ -17,11 +17,13 @@ public class GameObject
     protected int myHeight;
     protected BufferedImage image;
     protected boolean visible;
-    public GameObject(int x, int y, String imageFile)
+    private final int GAME_WIDTH;
+    public GameObject(int x, int y, String imageFile, gameWidth)
     {
         myX = x;
         myY = y;
         visible = true;
+        GAME_WIDTH = gameWidth;
         loadImage(imageFile);
         getImageDimensions();
     }    
