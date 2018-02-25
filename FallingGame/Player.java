@@ -1,10 +1,10 @@
-
 public class Player extends GameObject
 {
     private final int GAME_WIDTH;
     public Player(int x, int y, String imageFile, int gameWidth)
     {
-        super(x, y, imageFile, gameWidth);
+        super(x, y, imageFile);
+        GAME_WIDTH = gameWidth;
     }
     public void move(int deltaX)
     {
