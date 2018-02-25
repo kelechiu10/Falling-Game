@@ -121,6 +121,8 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
             Obstacle myObstacle = obstacles.get(i);
             if(myObstacle.getY() + myObstacle.getHeight() < 0)
                 obstacles.remove(i);
+            else
+                myObstacle.move();
             if(obstacles.size() == 1);
                 addObstacles(); 
         }
