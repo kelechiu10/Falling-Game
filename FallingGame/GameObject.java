@@ -17,13 +17,11 @@ public class GameObject
     protected int myHeight;
     protected BufferedImage image;
     protected boolean visible;
-    private final int GAME_WIDTH;
-    public GameObject(int x, int y, String imageFile, int gameWidth)
+    public GameObject(int x, int y, String imageFile)
     {
         myX = x;
         myY = y;
         visible = true;
-        GAME_WIDTH = gameWidth;
         loadImage(imageFile);
         getImageDimensions();
     }    
@@ -42,6 +40,10 @@ public class GameObject
     public int getHeight()
     {
         return myHeight;    
+    }
+    public BufferedImage getImage()
+    {
+        return image; 
     }
     public Rectangle getBounds()
     {
@@ -72,4 +74,3 @@ public class GameObject
         }
     }
 }
-
