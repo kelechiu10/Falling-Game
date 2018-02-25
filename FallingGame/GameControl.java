@@ -44,14 +44,9 @@ public class GameControl extends JPanel
     {
         new moveAction(name, deltaX, keyCode); 
     }
-    public void move(int deltaX)
+    public void movePlayer(int deltaX)
     {
-        int newX = myPlayer.getX() + deltaX;
-        //if out of game window
-        if(newX + myPlayer.getWidth() > getWidth())
-            newX = getWidth() - myPlayer.getWidth();
-        //set new position
-        myPlayer.setX(newX);
+        myPlayer.move(deltaX);
     }   
     /**
      * class moveAction - class for action objects created by GameControl
@@ -81,7 +76,7 @@ public class GameControl extends JPanel
         }
         public void actionPerformed(ActionEvent e)
         {
-            move(myDeltaX);
+            movePlayer(myDeltaX);
         }
     }
 }
