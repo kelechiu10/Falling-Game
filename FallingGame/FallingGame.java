@@ -30,6 +30,7 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
     private List<Obstacle> obstacles;
     private Timer timer;
     private Player player; 
+    int count = 0;
     /**
      * Constructor for objects of class FallingGame
      */
@@ -48,6 +49,7 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
         
         //add components
         add(control);
+        addMouseListener(this);
         setTitle("Falling Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
@@ -59,6 +61,8 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
     //adds a pair of obstacles, 1 per side of window
     public void addObstacles()
     {
+       System.out.println(count);
+       count++;
        int x, y, random;
        String imageFile; 
         //random sized obstacle on left half of screen
@@ -104,6 +108,7 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
        }
        Obstacle obstacle2 = new Obstacle(x, y, imageFile, WIDTH); 
        obstacles.add(obstacle2); 
+       
     }
     private void updateObstacles()
     {
@@ -113,20 +118,23 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
             Obstacle myObstacle = obstacles.get(i);
             if(ticks % 25 == 0 && myObstacle.getSpeed() < 10)
             {
-                myObstacle.updateSpeed(myObstacle.getSpeed() + 2);  
+                myObstacle.updateSpeed(myObstacle.getSpeed() + 2);
             }
-            myObstacle.move(myObstacle.getSpeed());
         }
         for(int i = 0; i < obstacles.size(); i++)
         {
             Obstacle myObstacle = obstacles.get(i);
             if(myObstacle.getY() + myObstacle.getHeight() < 0)
+            {
                 obstacles.remove(i);
-            if(obstacles.size() == 1);
-                addObstacles(); 
+                if(obstacles.size() == 0);
+                    addObstacles(); 
+            }
+            else
+                    myObstacle.move();
         }
     }
-    private void checkCollision()
+    private boolean checkCollision()
     {
         Rectangle r1 = player.getBounds(); 
         for(Obstacle obstacle : obstacles) 
@@ -139,13 +147,16 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
                 control.drawEnd(control.getGraphics(), score); 
             }
         }
+        return gameOver;
     }
     public void actionPerformed(ActionEvent e)
     {
         updateObstacles();
-        checkCollision();
-        score++;
-        control.repaint(); 
+        if(!checkCollision())
+        {
+            score++;
+            control.repaint();
+        }
     }
     public void mouseClicked(MouseEvent e)
     {

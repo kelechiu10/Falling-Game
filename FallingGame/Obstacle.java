@@ -1,7 +1,7 @@
 import java.awt.Rectangle;
 public class Obstacle extends GameObject
 {
-    private int mySpeed = 1;
+    private int mySpeed = 10;
     private final int GAME_WIDTH;
     public Obstacle(int x, int y, String imageFile, int gameWidth)
     {
