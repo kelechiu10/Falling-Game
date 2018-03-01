@@ -32,7 +32,15 @@ public class GameObject
     public int getY() 
     { 
         return myY; 
-    }   
+    }
+    public void setX(int x)
+    {
+        myX = x;
+    }
+    public void setY(int y)
+    {
+        myY = y;
+    }
     public int getWidth()
     {
         return myWidth;
@@ -47,7 +55,7 @@ public class GameObject
     }
     public Rectangle getBounds()
     {
-        return new Rectangle(myX, myY, myWidth, myHeight);
+        return new Rectangle((int) myX, (int) myY, myWidth, myHeight);
     }
     
     public boolean isVisible()
