@@ -18,6 +18,6 @@ public class Obstacle extends GameObject
     }
     public void move()
     {
-        myY -= mySpeed;
+        setY(myY -= mySpeed);
     }
 }

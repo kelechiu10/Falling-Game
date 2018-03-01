@@ -8,10 +8,17 @@ public class Player extends GameObject
     }
     public void move(int deltaX)
     {
-        int newX = myX + deltaX;
-        //if out of game window
-        if(newX + myWidth > GAME_WIDTH)
-            newX = GAME_WIDTH - myWidth;
-            
+        //find next position
+        //check if it goes out of left side of screen
+        int nextX = Math.max(getX() + deltaX, 0);
+        //if it touches right side of screen
+        if (nextX + getWidth() > GAME_WIDTH)
+        {
+            //dont let it move further
+            nextX = GAME_WIDTH - getWidth(); 
+        }
+        
+        //  Move the component
+        setX(nextX);
     }
 }

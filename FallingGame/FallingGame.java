@@ -36,7 +36,7 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
      */
     public FallingGame()
     {
-        player = new Player(200, 100, "playertest.png", WIDTH);
+        player = new Player(150, 100, "playertest.png", WIDTH);
         obstacles = new ArrayList<Obstacle>();
         addObstacles(); 
         
@@ -44,12 +44,13 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
         timer = new Timer(20, this); 
         
         //add keybinds
-        control.addAction("Left", -3, KeyEvent.VK_LEFT);
-        control.addAction("Right", 3, KeyEvent.VK_RIGHT);
+        control.addAction("Left", -2, KeyEvent.VK_LEFT);
+        control.addAction("Right", 2, KeyEvent.VK_RIGHT);
         
         //add components
         add(control);
         addMouseListener(this);
+        control.addMouseListener(this);
         setTitle("Falling Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
@@ -67,8 +68,9 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
        String imageFile; 
         //random sized obstacle on left half of screen
        //obstacle1 coordinates
-       x = 0 + ((int)(Math.random() * 50));
+       x = 50 + ((int)(Math.random() * 50));
        y = 600 + obstacles.size() * 100;
+       /*
        random = (int) (Math.random() * 3 + 1);
        switch (random)
        {
@@ -84,29 +86,14 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
            default:
             imageFile = "bigObstacle.png";
        }
-       
-       Obstacle obstacle1 = new Obstacle(x, y, imageFile, WIDTH);
+       */
+       Obstacle obstacle1 = new Obstacle(x, y, "smallObstacle.png", WIDTH);
        obstacles.add(obstacle1);
        
        //obstacle2 coordinates
-       x = 200 + ((int)(Math.random() * 50));
+       x = 250 + ((int)(Math.random() * 50));
        y = 600 + obstacles.size() * 100;
-       random = (int) (Math.random() * 3 + 1);
-       switch (random)
-       {
-           case 1: 
-            imageFile = "smallObstacle.png";
-            break;
-           case 2:
-            imageFile = "mediumObstacle.png";
-            break;
-           case 3:
-            imageFile = "bigObstacle.png";
-            break;
-           default:
-            imageFile = "bigObstacle.png";
-       }
-       Obstacle obstacle2 = new Obstacle(x, y, imageFile, WIDTH); 
+       Obstacle obstacle2 = new Obstacle(x, y, "smallObstacle.png", WIDTH); 
        obstacles.add(obstacle2); 
        
     }
@@ -124,14 +111,17 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
         for(int i = 0; i < obstacles.size(); i++)
         {
             Obstacle myObstacle = obstacles.get(i);
+            //if the obstacle is out of screen
             if(myObstacle.getY() + myObstacle.getHeight() < 0)
-            {
+            {    
+                //remove it and replace with new one
                 obstacles.remove(i);
                 if(obstacles.size() == 0);
-                    addObstacles(); 
+                    addObstacles();
             }
             else
-                    myObstacle.move();
+                //move obstacle up
+                myObstacle.move(); 
         }
     }
     private boolean checkCollision()
@@ -140,38 +130,51 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
         for(Obstacle obstacle : obstacles) 
         {
             Rectangle r2 = obstacle.getBounds(); 
+            //if obstacle touches player
             if(r1.intersects(r2))
             {
                 gameOver = true;
-                timer.stop(); 
-                control.drawEnd(control.getGraphics(), score); 
             }
         }
         return gameOver;
     }
     public void actionPerformed(ActionEvent e)
     {
-        updateObstacles();
-        if(!checkCollision())
+        if(gameOver)
         {
+            //end game + draw end screen
+            timer.stop(); 
+            control.drawEnd(control.getGraphics(), score);
+        }
+        else
+        {
+            //continue with game
+            updateObstacles();
+            checkCollision();
             score++;
-            control.repaint();
+            control.repaint(); 
         }
     }
     public void mouseClicked(MouseEvent e)
     {
-        if(gameOver)
-        {
-            obstacles.clear();
-            removeAll(); 
-            revalidate(); 
-            repaint();
-            timer.start();
-        }
+
     }
     public void mousePressed(MouseEvent e)
     {
-        
+        if(gameOver)
+        {
+            //reset game
+            obstacles.clear();
+            control.removeAll(); 
+            control.updateUI(); 
+            score = 0;
+            player.setX(150);
+            player.setY(100);
+            addObstacles();
+            timer.start();
+            repaint();
+            gameOver = false; 
+        }
     }
     public void mouseReleased(MouseEvent e)
     {
