@@ -2,6 +2,7 @@ import java.awt.Rectangle;
 import javax.swing.JLabel;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.io.File;
 import java.awt.image.BufferedImage;
 /**
  * Write a description of class GameObject here.
@@ -75,9 +76,17 @@ public class GameObject
     {   
         try
         {
-            image = ImageIO.read(getClass().getResource(imageFile));
-        } catch (IOException exp)
+            image = ImageIO.read(new File(imageFile));
+            //image = ImageIO.read(getClass().getResource(imageFile));
+        } 
+        catch (IOException exp)
         {
+            System.out.println("The image was not loaded.");
+            exp.printStackTrace();
+        }
+        catch (OutOfMemoryError exp)
+        {
+            System.out.println("Idk what happened");
             exp.printStackTrace();
         }
     }
