@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font; 
 import javax.swing.JPanel; 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -60,8 +61,9 @@ public class GameControl extends JPanel
         g.setColor(Color.WHITE);
         g.fillRect(50, 200, 300, 300);
         g.setColor(Color.BLACK); 
+        g.setFont(new Font("Arial", 1, 20));
         g.drawString("Game Over!", 100, 300); 
-        g.drawString("Your score -  " + score, 100, 350);
+        g.drawString("Your score: " + score, 100, 350);
         g.drawString("Click to restart", 100, 400);
     }
     /**
