@@ -19,7 +19,6 @@ public class GameControl extends JPanel
 {
     // instance variables - replace the example below with your own
     private InputMap inputMap; 
-    private ActionMap actionMap;
     private Player myPlayer;
     private int myDeltaX; 
     private List<Obstacle> myObstacles;
@@ -36,8 +35,7 @@ public class GameControl extends JPanel
         myObstacles = obstacles;
         //assign input and action maps
         setBackground(Color.GRAY);
-        inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW); 
-        actionMap = getActionMap(); 
+        inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);  
     }
     /**
      * method paintComponent - call this to repaint the window whenever a change is made
@@ -54,27 +52,39 @@ public class GameControl extends JPanel
         }
         
     }
+    /**
+     * method drawEnd - draws the ending screen
+     */
     public void drawEnd(Graphics g, int score)
     {
-        g.drawString("Game Over!", 200, getHeight()/2); 
-        g.drawString("Your score -  " + score, 200, getHeight()/2 + 25);
-        g.drawString("Click to restart", 200, getHeight()/2 + 50);
+        g.setColor(Color.WHITE);
+        g.fillRect(50, 200, 300, 300);
+        g.setColor(Color.BLACK); 
+        g.drawString("Game Over!", 100, 300); 
+        g.drawString("Your score -  " + score, 100, 350);
+        g.drawString("Click to restart", 100, 400);
     }
+    /**
+     * method addAction - adds new action to the action map for move command
+     * 
+     * @param name - name of Action
+     * @param deltaX - how fast it moves the player
+     * @param keyCode - key to bind Action to
+     */
     public void addAction(String name, int deltaX, int keyCode)
     {
-        new moveAction(name, deltaX, keyCode); 
-    }
-    public void movePlayer(int deltaX)
-    {
-        myPlayer.move(deltaX);
-    }   
+        MoveAction moveAction = new MoveAction(name, deltaX, keyCode); 
+        //assign action to input and actionmaps
+        inputMap.put(KeyStroke.getKeyStroke(keyCode, 0), name);
+        getActionMap().put(name, moveAction);
+    } 
     /**
      * class moveAction - class for action objects created by GameControl
      *
      * @author Alan Wang
      * @version 022318
      */
-    private class moveAction extends AbstractAction implements ActionListener
+    private class MoveAction extends AbstractAction implements ActionListener
     {
         // instance variables - replace the example below with your own
         private int myDeltaX;
@@ -85,18 +95,15 @@ public class GameControl extends JPanel
          * @param deltaX - change in x for Player object
          * @param keyCode -keyCode to bind action to
          */
-        public moveAction(String name, int deltaX, int keyCode)
+        public MoveAction(String name, int deltaX, int keyCode)
         {
             super(name); //create abstractAction with name
             myDeltaX = deltaX;
-            
-            //assign action to input and actionmaps
-            inputMap.put(KeyStroke.getKeyStroke(keyCode, 0), getValue(NAME));
-            actionMap.put(getValue(NAME), this);
         }
+        //called whenever key is pressed
         public void actionPerformed(ActionEvent e)
         {
-            movePlayer(myDeltaX);
+            myPlayer.move(myDeltaX);
         }
     }
 }
