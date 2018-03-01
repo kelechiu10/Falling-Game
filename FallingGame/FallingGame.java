@@ -162,7 +162,9 @@ public class FallingGame extends JFrame implements ActionListener, MouseListener
             obstacles.clear();
             control.removeAll(); 
             control.updateUI(); 
-            score = 0; 
+            score = 0;
+            player.setX(150);
+            player.setY(100);
             addObstacles();
             timer.start();
             repaint();
