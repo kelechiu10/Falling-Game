@@ -1,5 +1,7 @@
 import java.awt.Color;
+import java.awt.Font; 
 import javax.swing.JPanel; 
+import javax.swing.Action;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
@@ -15,14 +17,15 @@ import java.util.List;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class GameControl extends JPanel
+public class GameControl extends JPanel implements ActionListener
 {
     // instance variables - replace the example below with your own
-    private InputMap inputMap; 
-    private Player myPlayer;
-    private int myDeltaX; 
-    private List<Obstacle> myObstacles;
-
+    private InputMap inputMap; //input map for keybindings
+    private Player myPlayer; //player object to edit x of with moveAction
+    private int myDeltaX; //amount to change x  
+    private int numKeysPressed;
+    private List<Obstacle> myObstacles; //reference to array of obstacles in FallingGame object
+    private Timer timer;
     /**
      * Constructor for objects of class GameControl
      * 
@@ -33,12 +36,13 @@ public class GameControl extends JPanel
         //assign player and obstacle reference
         myPlayer = player;
         myObstacles = obstacles;
+        timer = new Timer(20, this); 
         //assign input and action maps
         setBackground(Color.GRAY);
         inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);  
     }
     /**
-     * method paintComponent - call this to repaint the window whenever a change is made
+     * method paintComponent - called to repaint the window whenever a change is made
      */
     protected void paintComponent(Graphics g)
     {
@@ -50,7 +54,6 @@ public class GameControl extends JPanel
         {
             g.drawImage(obstacle.getImage(), obstacle.getX(), obstacle.getY(), this);
         }
-        
     }
     /**
      * method drawEnd - draws the ending screen
@@ -60,8 +63,9 @@ public class GameControl extends JPanel
         g.setColor(Color.WHITE);
         g.fillRect(50, 200, 300, 300);
         g.setColor(Color.BLACK); 
+        g.setFont(new Font("Arial", 1, 20));
         g.drawString("Game Over!", 100, 300); 
-        g.drawString("Your score -  " + score, 100, 350);
+        g.drawString("Your score: " + score, 100, 350);
         g.drawString("Click to restart", 100, 400);
     }
     /**
@@ -73,11 +77,28 @@ public class GameControl extends JPanel
      */
     public void addAction(String name, int deltaX, int keyCode)
     {
-        MoveAction moveAction = new MoveAction(name, deltaX, keyCode); 
+        MoveAction moveAction = new MoveAction(name, deltaX, keyCode);
         //assign action to input and actionmaps
-        inputMap.put(KeyStroke.getKeyStroke(keyCode, 0), name);
-        getActionMap().put(name, moveAction);
-    } 
+
+    }
+    private void handleKeyEvent(boolean keyPressed, int deltaX)
+    {
+        if (keyPressed == true)
+            numKeysPressed++;
+        else
+            numKeysPressed--;
+            
+        myDeltaX += deltaX;
+        
+        if(numKeysPressed == 1)
+            timer.start();
+        if(numKeysPressed == 0)
+            timer.stop();
+    }
+    public void actionPerformed(ActionEvent e)
+    {
+        myPlayer.move(myDeltaX);
+    }
     /**
      * class moveAction - class for action objects created by GameControl
      *
@@ -88,6 +109,9 @@ public class GameControl extends JPanel
     {
         // instance variables - replace the example below with your own
         private int myDeltaX;
+        private KeyStroke pressedKeyStroke;
+        private boolean listeningForKeyPressed;
+        
         /**
          * Constructor for objects of class moveAction
          * 
@@ -98,12 +122,32 @@ public class GameControl extends JPanel
         public MoveAction(String name, int deltaX, int keyCode)
         {
             super(name); //create abstractAction with name
+            
             myDeltaX = deltaX;
+            
+            pressedKeyStroke = KeyStroke.getKeyStroke(keyCode, 0, false); 
+            KeyStroke releasedKeyStroke = KeyStroke.getKeyStroke(keyCode, 0, true);
+            
+            inputMap.put(pressedKeyStroke, getValue(Action.NAME));
+            inputMap.put(releasedKeyStroke, getValue(Action.NAME));
+            getActionMap().put(getValue(Action.NAME), this);
+            listeningForKeyPressed = true;
         }
-        //called whenever key is pressed
+        //called whenever key is pressed/released
         public void actionPerformed(ActionEvent e)
         {
-            myPlayer.move(myDeltaX);
+            if (listeningForKeyPressed)
+            {
+                handleKeyEvent(true, myDeltaX);
+                inputMap.remove(pressedKeyStroke);
+                listeningForKeyPressed = false;
+            }
+            else // listening for key released
+            {
+                handleKeyEvent(false, -myDeltaX);
+                inputMap.put(pressedKeyStroke, getValue(Action.NAME));
+                listeningForKeyPressed = true;
+            } 
         }
     }
 }
